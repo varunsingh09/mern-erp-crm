@@ -24,7 +24,9 @@ const app = express();
 
 // Takes the raw requests and turns them into usable properties on req.body
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 app.use(morgan('short'));
 app.use(cookieParser());
 app.use(express.json());

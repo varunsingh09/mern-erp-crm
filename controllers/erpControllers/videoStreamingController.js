@@ -92,7 +92,7 @@ exports.live = async (req, res) => {
         // Stream the video chunk to the client
         videoStream.pipe(res);
     } catch (err) {
-        console.log('err', err)
+        console.log('err.......................................', err)
         res.status(500).json({ success: false, result: null, message: err.message, error: err });
     }
 };

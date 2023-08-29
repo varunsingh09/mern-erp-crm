@@ -1,6 +1,7 @@
 require('dotenv').config({ path: __dirname + '/../.variables.env' });
 
 const mongoose = require('mongoose');
+console.log('DATABASE', process.env.DATABASE)
 mongoose.connect(process.env.DATABASE);
 mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
 
@@ -8,7 +9,7 @@ async function createAdmin() {
   try {
     const Admin = require('../models/erpModels/Admin');
     var newAdmin = new Admin();
-    const passwordHash = newAdmin.generateHash('admin123');
+    const passwordHash = newAdmin.generateHash('admin@12345');
 
     await new Admin({
       email: 'admin@demo.com',
