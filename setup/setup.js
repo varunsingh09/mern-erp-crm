@@ -13,8 +13,8 @@ async function createAdmin() {
     await new Admin({
       email: 'admin@demo.com',
       password: passwordHash,
-      name: 'Salah Eddine',
-      surname: 'Lalami',
+      name: 'Varun Sisodia',
+      surname: 'Sisodia',
     }).save();
     console.log('👍👍👍👍👍👍👍👍 Admin created : Done!');
     process.exit();

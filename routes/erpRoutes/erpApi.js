@@ -22,6 +22,11 @@ const expenseCategoryController = require('@/controllers/erpControllers/expenseC
 const paymentInvoiceController = require('@/controllers/erpControllers/paymentInvoiceController');
 
 const settingsController = require('@/controllers/erpControllers/settingsController');
+const countryController = require('@/controllers/erpControllers/countryController');
+const videoStreamingController = require('@/controllers/erpControllers/videoStreamingController');
+const orderController = require('@/controllers/erpControllers/orderController');
+
+
 
 // //_______________________________ Admin management_______________________________
 
@@ -39,10 +44,10 @@ router
   .route('/admin/create')
   .post([adminPhotoUpload.single('photo'), setFilePathToBody], catchErrors(adminController.create));
 router.route('/admin/read/:id').get(catchErrors(adminController.read));
-// router.route("/admin/update/:id").patch(catchErrors(adminController.update));
-// router.route("/admin/delete/:id").delete(catchErrors(adminController.delete));
+router.route("/admin/update/:id").patch(catchErrors(adminController.update));
+router.route("/admin/delete/:id").delete(catchErrors(adminController.delete));
 router.route('/admin/search').get(catchErrors(adminController.search));
-router.route('/admin/list').get(catchErrors(adminController.list));
+router.route('/admin/list').get(adminController.list);
 router.route('/admin/profile').get(catchErrors(adminController.profile));
 router.route('/admin/status/:id').patch(catchErrors(adminController.status));
 // router
@@ -68,7 +73,7 @@ router.route('/role/filter').get(catchErrors(roleController.filter));
 // //_________________________________ API for employees_____________________
 router.route('/employee/create').post(catchErrors(employeeController.create));
 router
-  .route("/employee/photo")
+  .route("/employee/photo/:type")
   .post(
     [adminPhotoUpload.single("photo"), setFilePathToBody],
     catchErrors(employeeController.photo)
@@ -190,5 +195,24 @@ router.route('/settings/delete/:id').delete(catchErrors(settingsController.delet
 router.route('/settings/search').get(catchErrors(settingsController.search));
 router.route('/settings/list').get(catchErrors(settingsController.list));
 router.route('/settings/filter').get(catchErrors(settingsController.filter));
+
+//State and city list
+router.route('/country/list').get(catchErrors(countryController.list));
+
+// Video section start here
+router.route('/video/create').post(catchErrors(videoStreamingController.create));
+router.route('/video/live').get(catchErrors(videoStreamingController.live));
+router.route('/video/list').get(catchErrors(videoStreamingController.list));
+router.route('/video/update/:id').patch(catchErrors(videoStreamingController.update));
+
+
+// //_____________________________________ API for order __________________________________________________
+router.route('/order/create').post(catchErrors(orderController.create));
+router.route('/order/read/:id').get(catchErrors(orderController.read));
+router.route('/order/update/:id').patch(catchErrors(orderController.update));
+router.route('/order/delete/:id').delete(catchErrors(orderController.delete));
+router.route('/order/search').get(catchErrors(orderController.search));
+router.route('/order/list').get(catchErrors(orderController.list));
+router.route('/order/filter').get(catchErrors(orderController.filter));
 
 module.exports = router;

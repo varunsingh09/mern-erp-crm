@@ -120,6 +120,21 @@ const request = {
     }
   },
 
+  stateList: async ({ entity, options = {} }) => {
+    try {
+      // headersInstance.cancelToken = source.token;
+      const response = await axios.get(`/country/list`);
+
+      successHandler(response, {
+        notifyOnSuccess: false,
+        notifyOnFailed: false,
+      });
+      return response.data;
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+
   post: async ({ entity, jsonData, options = {} }) => {
     try {
       const response = await axios.post(entity, jsonData);

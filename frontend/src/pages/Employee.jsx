@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import CrudModule from '@/modules/CrudModule';
 import EmployeeForm from '@/forms/EmployeeForm';
+
+
 import dayjs from 'dayjs';
 export default function Employee() {
   const entity = 'employee';
@@ -136,8 +138,9 @@ export default function Employee() {
   return (
     <CrudModule
       createForm={<EmployeeForm setSelectedFile={setSelectedFile} selectedFile={selectedFile} />}
-      updateForm={<EmployeeForm isUpdateForm={true} />}
+      updateForm={<EmployeeForm isUpdateForm={true} setSelectedFile={setSelectedFile} />}
       config={config}
-    />
+    >
+    </CrudModule>
   );
 }

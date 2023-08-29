@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Admin = mongoose.model('Admin');
+const { createActivationToken } = require('./authJwtController');
+const sendEmail = require("./../../config/sendEmail");
 const getOne = require('../corsControllers/custom').getOne;
 
 /**
@@ -48,7 +50,7 @@ exports.list = async (req, res) => {
         message: 'Collection is Empty',
       });
     }
-  } catch {
+  } catch (error) {
     return res.status(500).json({ success: false, result: [], message: 'Oops there is an Error' });
   }
 };
@@ -136,6 +138,7 @@ exports.photo = async (req, res) => {
     });
   }
 };
+
 exports.read = async (req, res) => {
   try {
     // Find document by id
@@ -185,7 +188,7 @@ exports.read = async (req, res) => {
  *  @returns {string} Message
  */
 
-exports.create = async (req, res) => {
+exports.create = async (req, res, next) => {
   try {
     let { email, password } = req.body;
     if (!email || !password)
@@ -223,21 +226,60 @@ exports.create = async (req, res) => {
         message: "document couldn't save correctly",
       });
     }
-    return res.status(200).send({
-      success: true,
-      result: {
-        _id: result._id,
-        enabled: result.enabled,
-        email: result.email,
-        name: result.name,
-        surname: result.surname,
-        photo: result.photo,
-        role: result.role,
-        employee: result.employee,
-      },
-      message: 'Admin document save correctly',
-    });
-  } catch {
+
+    const results = {
+      _id: result._id,
+      enabled: result.enabled,
+      email: result.email,
+      name: result.name,
+      surname: result.surname,
+      role: result.role,
+      employee: result.employee,
+    }
+    if (process.env.SMTP_ENABLE === "true") {
+      console.log('in activation')
+      // Create reset password url
+      const token = createActivationToken(results);
+
+      const resetUrl = `${process.env.host}/api/v1/activation/${token}`;
+
+      const message = `<div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
+                      <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to the MERN Auth app.</h2>
+                      <p>Congratulations! You're almost set to start using MERN Auth app.
+                          Just click the button below to validate your email address.
+                      </p>
+
+                      <a href=${resetUrl} style="background: crimson; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display: inline-block;">Active</a>
+
+                      <p>If the button doesn't work for any reason, you can also click on the link below:</p>
+
+                      <div>${resetUrl}</div>
+                      <p>If you have not requested this email, then ignore it.</p>
+                  </div>`;
+
+      try {
+
+        await sendEmail({
+          email: result.email,
+          subject: "ERP Auth Email Activation",
+          message,
+        });
+
+        return res.status(200).send({
+          success: true,
+          result: results,
+          message: `Admin successfully correctly,and email sent to ${result.email}`,
+        });
+
+
+      } catch (error) {
+        console.log('error', error)
+        return next(new ErrorHandler(error.message, 500));
+      }
+    }
+
+  } catch (error) {
+    console.log('error....................', error)
     return res.status(500).json({ success: false, message: 'there is error' });
   }
 };

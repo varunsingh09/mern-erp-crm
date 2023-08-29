@@ -49,6 +49,10 @@ export const routesConfig = [
     component: 'Quote',
   },
   {
+    path: '/order/order',
+    component: 'Order',
+  },
+  {
     path: '/payment/invoice',
     component: 'PaymentInvoice',
   },
@@ -59,6 +63,10 @@ export const routesConfig = [
   {
     path: '/admin',
     component: 'Admin',
+  },
+  {
+    path: '/video',
+    component: 'Video',
   },
   {
     path: '/settings',

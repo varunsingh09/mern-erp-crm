@@ -32,7 +32,7 @@ const employeeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  photo: {
+  file: {
     type: String,
     trim: true,
   },
@@ -51,7 +51,14 @@ const employeeSchema = new mongoose.Schema({
   state: {
     type: String,
   },
+  city: {
+    type: String,
+  },
   phone: {
+    type: String,
+    trim: true,
+  },
+  pincode: {
     type: String,
     trim: true,
   },

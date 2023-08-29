@@ -6,14 +6,11 @@ import { crud } from '@/redux/crud/actions';
 import { useCrudContext } from '@/context/crud';
 import { selectUpdatedItem } from '@/redux/crud/selectors';
 
-import { isDate } from '@/utils/helpers';
-import { selectCurrentItem } from '@/redux/crud/selectors';
-
 import { Button, Form } from 'antd';
 import Loading from '@/components/Loading';
 
 export default function UpdateForm({ config, formElements }) {
-  let { entity } = config;
+  let { entity, selectedFile } = config;
   const dispatch = useDispatch();
   const { current, isLoading, isSuccess } = useSelector(selectUpdatedItem);
 
@@ -31,6 +28,7 @@ export default function UpdateForm({ config, formElements }) {
   const [form] = Form.useForm();
 
   const onSubmit = (fieldsValue) => {
+    fieldsValue.photo = selectedFile
     console.log('🚀 ~ file: index.jsx ~ line 34 ~ onSubmit ~  current._id', current._id);
     const id = current._id;
     dispatch(crud.update({ entity, id, jsonData: fieldsValue }));
@@ -66,6 +64,7 @@ export default function UpdateForm({ config, formElements }) {
         newValues = {
           ...newValues,
           updated: dayjs(newValues['updated']),
+          state: newValues.toString()
         };
       }
 

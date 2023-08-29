@@ -1,10 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { stubFalse } = require('lodash');
-
-const mongoose = require('mongoose');
-
-const Admin = mongoose.model('Admin');
+const fs = require("fs");
+const Admin = require('./../../models/erpModels/Admin');
 
 require('dotenv').config({ path: '.variables.env' });
 
@@ -88,7 +86,6 @@ exports.login = async (req, res) => {
 exports.isValidAdminToken = async (req, res, next) => {
   try {
     const token = req.cookies.token || req.headers.authorization
-
     if (!token)
       return res.status(401).json({
         success: false,
@@ -156,4 +153,48 @@ exports.logout = async (req, res) => {
       Path: '/',
     })
     .json({ isLoggedOut: true });
+};
+
+//   try {
+//     const range = req.headers.range;
+//     if (!range) {
+//       res.status(400).send("Requires Range header");
+//     }
+
+//     const sourceLocation = `./public/video`;
+
+//     const videoFilePath = `${sourceLocation}/Chris-Do.mp4`;
+//     const videoSize = fs.statSync(videoFilePath).size;
+
+//     const CHUNK_SIZE = 10 ** 6; // 1MB
+//     const start = Number(range.replace(/\D/g, ""));
+//     const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+//     // Create headers
+//     const contentLength = end - start + 1;
+//     const headers = {
+//       "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+//       "Accept-Ranges": "bytes",
+//       "Content-Length": contentLength,
+//       "Content-Type": "video/mp4",
+//     };
+
+//     // HTTP Status 206 for Partial Content
+//     res.writeHead(206, headers);
+
+//     // create video read stream for this particular chunk
+//     const videoStream = fs.createReadStream(videoFilePath, { start, end });
+
+//     // Stream the video chunk to the client
+//     videoStream.pipe(res);
+//   } catch (err) {
+//     console.log('err', err)
+//     res.status(500).json({ success: false, result: null, message: err.message, error: err });
+//   }
+// };
+
+exports.createActivationToken = (payload) => {
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_TIME,
+  });
 };

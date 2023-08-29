@@ -15,8 +15,7 @@ import { useCrudContext } from '@/context/crud';
 
 import { CrudLayout } from '@/layout';
 
-import AdminDataTable from './AdminDataTable';
-import UpdatePassword from './UpdatePassword';
+import VideoDataTable from './VideoDataTable';
 
 import { selectCurrentItem } from '@/redux/crud/selectors';
 
@@ -28,7 +27,7 @@ function SidePanelTopContent({ config, formElements }) {
   const { isReadBoxOpen, isEditBoxOpen, isAdvancedBoxOpen } = state;
   const { result: currentItem } = useSelector(selectCurrentItem);
   const dispatch = useDispatch();
-  console.log('currentItem', currentItem?.role?.codeName)
+
   const [labels, setLabels] = useState('');
   useEffect(() => {
     if (currentItem) {
@@ -46,10 +45,6 @@ function SidePanelTopContent({ config, formElements }) {
     dispatch(crud.currentAction({ actionType: 'update', data: currentItem }));
     editBox.open();
   };
-  const updatePassword = () => {
-    dispatch(crud.currentAction({ actionType: 'update', data: currentItem }));
-    advancedBox.open();
-  };
 
   const show =
     isReadBoxOpen || isEditBoxOpen || isAdvancedBoxOpen ? { opacity: 1 } : { opacity: 0 };
@@ -60,38 +55,28 @@ function SidePanelTopContent({ config, formElements }) {
           <p style={{ marginBottom: "10px" }}>{labels}</p>
         </Col> */}
         <Col span={24}>
-          {currentItem?.role?.codeName ?
-            <><Button
-              onClick={removeItem}
-              type="text"
-              icon={<DeleteOutlined />}
-              size="small"
-              style={{
-                float: 'left',
-                marginRight: '5px',
-                marginLeft: '-5px',
-              }}
-            >
-              remove
-            </Button>
-              <Button
-                onClick={editItem}
-                type="text"
-                icon={<EditOutlined />}
-                size="small"
-                style={{ float: 'left', marginRight: '5px' }}
-              >
-                edit
-              </Button> </> :
-            <Button
-              onClick={updatePassword}
-              type="text"
-              icon={<LockOutlined />}
-              size="small"
-              style={{ float: 'left', marginRight: '0px' }}
-            >
-              update password
-            </Button>}
+          <Button
+            onClick={removeItem}
+            type="text"
+            icon={<DeleteOutlined />}
+            size="small"
+            style={{
+              float: 'left',
+              marginRight: '5px',
+              marginLeft: '-5px',
+            }}
+          >
+            remove
+          </Button>
+          <Button
+            onClick={editItem}
+            type="text"
+            icon={<EditOutlined />}
+            size="small"
+            style={{ float: 'left', marginRight: '5px' }}
+          >
+            edit
+          </Button>
         </Col>
 
         <Col span={24}></Col>
@@ -99,7 +84,6 @@ function SidePanelTopContent({ config, formElements }) {
       </Row>
       <ReadItem config={config} />
       <UpdateForm config={config} formElements={formElements} />
-      <UpdatePassword config={config} />
     </>
   );
 }
@@ -130,7 +114,7 @@ function FixHeaderPanel({ config }) {
   );
 }
 
-function AdminCrudModule({ config, createForm, updateForm }) {
+function VideoCrudModule({ config, createForm, updateForm }) {
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -144,10 +128,10 @@ function AdminCrudModule({ config, createForm, updateForm }) {
       sidePanelBottomContent={<CreateForm config={config} formElements={createForm} />}
       sidePanelTopContent={<SidePanelTopContent config={config} formElements={updateForm} />}
     >
-      <AdminDataTable config={config} />
+      <VideoDataTable config={config} />
       <DeleteModal config={config} />
     </CrudLayout>
   );
 }
 
-export default AdminCrudModule;
+export default VideoCrudModule;

@@ -24,12 +24,11 @@ function AddNewItem({ config }) {
     </Button>
   );
 }
-function DropDownRowMenu({ row, config }) {
+function DropDownRowMenu({ row }) {
   const dispatch = useDispatch();
   const { crudContextAction } = useCrudContext();
   const { panel, collapsedBox, modal, advancedBox, readBox, editBox } = crudContextAction;
   const item = useSelector(selectItemById(row._id));
-
   const Show = () => {
     dispatch(crud.currentItem({ data: item }));
     panel.open();
@@ -59,20 +58,16 @@ function DropDownRowMenu({ row, config }) {
       <Menu.Item key={`${uniqueId()}`} icon={<EyeOutlined />} onClick={Show}>
         Show
       </Menu.Item>
-      {row?.role?.codeName ?
-        <><Menu.Item key={`${uniqueId()}`} icon={<EditOutlined />} onClick={Edit}>
-          Edit
-        </Menu.Item>
-          <Menu.Item key={`${uniqueId()}`} icon={<LockOutlined />} onClick={UpdatePassword}>
-            Update Password
-          </Menu.Item>
-          <Menu.Item key={`${uniqueId()}`} icon={<DeleteOutlined />} onClick={Delete}>
-            Delete
-          </Menu.Item></> : ''}
+      <Menu.Item key={`${uniqueId()}`} icon={<EditOutlined />} onClick={Edit}>
+        Edit
+      </Menu.Item>
+      <Menu.Item key={`${uniqueId()}`} icon={<DeleteOutlined />} onClick={Delete}>
+        Delete
+      </Menu.Item>
     </Menu>
   );
 }
 
-export default function AdminCrudModule({ config }) {
+export default function VideoCrudModule({ config }) {
   return <DataTable config={config} DropDownRowMenu={DropDownRowMenu} AddNewItem={AddNewItem} />;
 }

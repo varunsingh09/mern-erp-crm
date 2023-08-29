@@ -17,3 +17,5 @@ export const selectReadItem = createSelector([selectCrud], (crud) => crud.read);
 export const selectDeletedItem = createSelector([selectCrud], (crud) => crud.delete);
 
 export const selectSearchedItems = createSelector([selectCrud], (crud) => crud.search);
+
+export const stateItems = createSelector([selectCrud], (crud) => crud.stateList);

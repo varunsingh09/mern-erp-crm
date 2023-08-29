@@ -15,6 +15,7 @@ import {
   TeamOutlined,
   UserOutlined,
   CreditCardOutlined,
+  VideoCameraAddOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -72,6 +73,10 @@ export default function Navigation() {
             <Link to={'/quote'} />
             Quote
           </Menu.Item>
+          <Menu.Item key={'Order'} icon={<CreditCardOutlined />}>
+            <Link to={'/order/order'} />
+            Order
+          </Menu.Item>
           <Menu.Item key={'PaymentInvoice'} icon={<CreditCardOutlined />}>
             <Link to={'/payment/invoice'} />
             Payment Invoice
@@ -79,6 +84,10 @@ export default function Navigation() {
           <Menu.Item key={'Employee'} icon={<UserOutlined />}>
             <Link to={'/employee'} />
             Employee
+          </Menu.Item>
+          <Menu.Item key={'Video'} icon={<VideoCameraAddOutlined />}>
+            <Link to={'/video'} />
+            Video
           </Menu.Item>
           <Menu.Item key={'Admin'} icon={<TeamOutlined />}>
             <Link to={'/admin'} />

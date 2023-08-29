@@ -1,8 +1,8 @@
 import React from 'react';
-import {Divider, Row, Col } from 'antd';
-
+import { Divider, Row, Col } from 'antd';
+import { VideoPlayer } from '@/components/CustomAntd';
 import { Statistic, Progress, Tag } from 'antd';
-
+import { API_BASE_URL } from '@/config/serverApiConfig';
 import { ArrowUpOutlined } from '@ant-design/icons';
 
 import { DashboardLayout } from '@/layout';
@@ -314,6 +314,24 @@ export default function Dashboard() {
               <h3 style={{ color: '#22075e', marginBottom: 5 }}>Recent Quotes</h3>
             </div>
             <RecentTable entity={'quote'} dataTableColumns={dataTableColumns} />
+          </div>
+        </Col>
+
+        <Col
+          className="gutter-row"
+          xs={{ span: 24 }}
+          sm={{ span: 24 }}
+          md={{ span: 12 }}
+          lg={{ span: 12 }}
+        >
+          <div className="whiteBox shadow mt-10">
+            <div className="pad20">
+              <h3 style={{ color: '#22075e', marginBottom: 5 }}>Live Streaming</h3>
+            </div>
+            {/* <video id="videoPlayer" width="100%" controls autoplay muted="false">
+              <source src="http://localhost:8888/api/video/streaming" type="video/mp4" />
+            </video> */}
+            <VideoPlayer url={`${API_BASE_URL}video/live`} />
           </div>
         </Col>
       </Row>

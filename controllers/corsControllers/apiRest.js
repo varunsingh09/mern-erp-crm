@@ -5,6 +5,7 @@
  */
 
 const moment = require('moment');
+const fs = require("fs")
 
 exports.read = async (Model, req, res) => {
   try {
@@ -47,7 +48,6 @@ exports.create = async (Model, req, res) => {
     // Creating a new document in the collection
 
     const result = await new Model(req.body).save();
-    console.log(result);
     // Returning successfull response
     return res.status(200).json({
       success: true,
@@ -83,6 +83,22 @@ exports.create = async (Model, req, res) => {
 
 exports.update = async (Model, req, res) => {
   try {
+
+    const row = await Model.findOne({ _id: req.params.id, removed: false });
+    const { photo = '' } = row;
+    if (photo) {
+      const pathToFile = `./public/uploads/admin/${photo}`
+      if (fs.existsSync(pathToFile)) {
+        fs.unlink(pathToFile, (err) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log('deleted'); console.log("Successfully deleted the file.", pathToFile)
+        })
+      }
+    }
+
+
     // Find document by id and updates with the required fields
     const result = await Model.findOneAndUpdate({ _id: req.params.id, removed: false }, req.body, {
       new: true, // return the new result instead of the old one
@@ -134,6 +150,12 @@ exports.delete = async (Model, req, res) => {
     let updates = {
       removed: true,
     };
+
+
+    const isRole = await Model.findOne({ _id: req.params.id, removed: false });
+
+    console.log('role', isRole);
+    return false
     // Find the document by id and delete it
     const result = await Model.findOneAndUpdate(
       { _id: req.params.id, removed: false },
@@ -397,6 +419,7 @@ exports.getFilterbyDate = async (Model, req, res) => {
 
 
 exports.photo = async (Model, req, res) => {
+  console.log(req.params)
   try {
     // Find document by id
     const updates = {
@@ -405,7 +428,7 @@ exports.photo = async (Model, req, res) => {
     return res.status(200).json({
       success: true,
       result: updates,
-      message: 'Avatar uploaded successfully.',
+      message: `${req.params.type} uploaded successfully.`,
     });
 
   } catch (error) {

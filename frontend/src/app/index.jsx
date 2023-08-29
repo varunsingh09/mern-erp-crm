@@ -17,7 +17,6 @@ function App() {
   const [isOnline] = useNetwork();
   // const networkState = useNetworkState();
   // console.log('networkState', networkState)
-  console.log('isOnline', isOnline)
   if (!isOnline) {
     notification.config({
       duration: 0,

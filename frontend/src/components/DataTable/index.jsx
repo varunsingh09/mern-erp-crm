@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Dropdown, Button, PageHeader, Table } from 'antd';
-
 import { EllipsisOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { crud } from '@/redux/crud/actions';
 import { selectListItems } from '@/redux/crud/selectors';
 import { Excel } from "antd-table-saveas-excel";
 import uniqueId from '@/utils/uinqueId';
+import { socket, getOrders } from '@/config/socketIo';
 
 export default function DataTable({ config, DropDownRowMenu, AddNewItem }) {
+  const [orders, setOrders] = useState([])
   let { entity, dataTableColumns, dataTableTitle, downloadReport, readColumns } = config;
 
   dataTableColumns = [
@@ -25,7 +26,7 @@ export default function DataTable({ config, DropDownRowMenu, AddNewItem }) {
 
   const { result: listResult, isLoading: listIsLoading } = useSelector(selectListItems);
 
-  const { pagination, items } = listResult;
+  var { pagination, items } = listResult;
 
   const dispatch = useDispatch();
 
@@ -34,17 +35,25 @@ export default function DataTable({ config, DropDownRowMenu, AddNewItem }) {
     dispatch(crud.list({ entity, options }));
   }, []);
 
+
   useEffect(() => {
-    dispatch(crud.list({ entity }));
+
+    if (entity === "order") {
+      socket(setOrders);
+      getOrders(setOrders);
+    } else {
+      dispatch(crud.list({ entity }));
+    }
+
   }, []);
 
   useEffect(() => {
 
     if (downloadReport) {
-      const fileName = `erp_employee_report_${Math.random()}.xlsx`;
+      const fileName = `erp_${entity}_report_${Math.random()}.xlsx`;
       const excel = new Excel();
       excel
-        .addSheet(`employee`)
+        .addSheet(`${entity}`)
         .addColumns(readColumns)
         .addDataSource(items, {
         })
@@ -71,7 +80,7 @@ export default function DataTable({ config, DropDownRowMenu, AddNewItem }) {
       <Table
         columns={dataTableColumns}
         rowKey={(item) => item._id}
-        dataSource={items}
+        dataSource={entity === 'order' ? orders : items}
         pagination={pagination}
         loading={listIsLoading}
         onChange={handelDataTableLoad}

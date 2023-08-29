@@ -1,5 +1,5 @@
 require('module-alias/register');
-const mongoose = require('mongoose');
+require('./config/db');
 
 // Make sure we are running node 7.6+
 const [major, minor] = process.versions.node.split('.').map(parseFloat);
@@ -11,14 +11,7 @@ if (major < 14 || (major === 14 && minor <= 0)) {
 // import environmental variables from our variables.env file
 require('dotenv').config({ path: '.variables.env' });
 
-// Connect to our Database and handle any bad connections
-// mongoose.connect(process.env.DATABASE);
 
-mongoose.connect(process.env.DATABASE);
-mongoose.Promise = global.Promise; // Tell Mongoose to use ES6 promises
-mongoose.connection.on('error', (err) => {
-  console.error(`🚫 Error → : ${err.message}`);
-});
 
 const glob = require('glob');
 const path = require('path');

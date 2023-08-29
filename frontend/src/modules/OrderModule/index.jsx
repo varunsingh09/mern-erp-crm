@@ -1,7 +1,6 @@
-import React, { useLayoutEffect, useState, useEffect } from 'react';
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import { Row, Col, Button } from 'antd';
-
-import { PlusOutlined, EditOutlined, DeleteOutlined, LockOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import CreateForm from '@/components/CreateForm';
 import UpdateForm from '@/components/UpdateForm';
@@ -10,25 +9,24 @@ import ReadItem from '@/components/ReadItem';
 import SearchItem from '@/components/SearchItem';
 
 import { useDispatch, useSelector } from 'react-redux';
+
+import { selectCurrentItem } from '@/redux/crud/selectors';
 import { crud } from '@/redux/crud/actions';
 import { useCrudContext } from '@/context/crud';
 
 import { CrudLayout } from '@/layout';
 
-import AdminDataTable from './AdminDataTable';
-import UpdatePassword from './UpdatePassword';
-
-import { selectCurrentItem } from '@/redux/crud/selectors';
+import CrudDataTable from './CrudDataTable';
 
 function SidePanelTopContent({ config, formElements }) {
   const { crudContextAction, state } = useCrudContext();
   const { entityDisplayLabels } = config;
-  const { advancedBox, modal, editBox } = crudContextAction;
+  const { modal, editBox } = crudContextAction;
 
-  const { isReadBoxOpen, isEditBoxOpen, isAdvancedBoxOpen } = state;
+  const { isReadBoxOpen, isEditBoxOpen } = state;
   const { result: currentItem } = useSelector(selectCurrentItem);
   const dispatch = useDispatch();
-  console.log('currentItem', currentItem?.role?.codeName)
+
   const [labels, setLabels] = useState('');
   useEffect(() => {
     if (currentItem) {
@@ -46,71 +44,55 @@ function SidePanelTopContent({ config, formElements }) {
     dispatch(crud.currentAction({ actionType: 'update', data: currentItem }));
     editBox.open();
   };
-  const updatePassword = () => {
-    dispatch(crud.currentAction({ actionType: 'update', data: currentItem }));
-    advancedBox.open();
-  };
 
-  const show =
-    isReadBoxOpen || isEditBoxOpen || isAdvancedBoxOpen ? { opacity: 1 } : { opacity: 0 };
+  const show = isReadBoxOpen || isEditBoxOpen ? { opacity: 1 } : { opacity: 0 };
   return (
     <>
       <Row style={show}>
-        {/* <Col span={13}>
-          <p style={{ marginBottom: "10px" }}>{labels}</p>
-        </Col> */}
-        <Col span={24}>
-          {currentItem?.role?.codeName ?
-            <><Button
-              onClick={removeItem}
-              type="text"
-              icon={<DeleteOutlined />}
-              size="small"
-              style={{
-                float: 'left',
-                marginRight: '5px',
-                marginLeft: '-5px',
-              }}
-            >
-              remove
-            </Button>
-              <Button
-                onClick={editItem}
-                type="text"
-                icon={<EditOutlined />}
-                size="small"
-                style={{ float: 'left', marginRight: '5px' }}
-              >
-                edit
-              </Button> </> :
-            <Button
-              onClick={updatePassword}
-              type="text"
-              icon={<LockOutlined />}
-              size="small"
-              style={{ float: 'left', marginRight: '0px' }}
-            >
-              update password
-            </Button>}
+        <Col span={13}>
+          <p style={{ marginBottom: '10px' }}>{labels}</p>
+        </Col>
+        <Col span={11}>
+          <Button
+            onClick={removeItem}
+            type="text"
+            icon={<DeleteOutlined />}
+            size="small"
+            style={{ float: 'right', marginLeft: '5px' }}
+          >
+            remove
+          </Button>
+          <Button
+            onClick={editItem}
+            type="text"
+            icon={<EditOutlined />}
+            size="small"
+            style={{ float: 'right', marginLeft: '0px' }}
+          >
+            edit
+          </Button>
         </Col>
 
-        <Col span={24}></Col>
+        <Col span={24}>
+          <div className="line"></div>
+        </Col>
         <div className="space10"></div>
       </Row>
       <ReadItem config={config} />
       <UpdateForm config={config} formElements={formElements} />
-      <UpdatePassword config={config} />
     </>
   );
 }
 
 function FixHeaderPanel({ config }) {
   const { crudContextAction } = useCrudContext();
+
   const { collapsedBox } = crudContextAction;
 
   const addNewItem = () => {
     collapsedBox.close();
   };
+
   return (
     <div className="box">
       <Row gutter={12}>
@@ -130,7 +112,7 @@ function FixHeaderPanel({ config }) {
   );
 }
 
-function AdminCrudModule({ config, createForm, updateForm }) {
+function CrudModule({ config, createForm, updateForm }) {
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -144,10 +126,10 @@ function AdminCrudModule({ config, createForm, updateForm }) {
       sidePanelBottomContent={<CreateForm config={config} formElements={createForm} />}
       sidePanelTopContent={<SidePanelTopContent config={config} formElements={updateForm} />}
     >
-      <AdminDataTable config={config} />
+      <CrudDataTable config={config} />
       <DeleteModal config={config} />
     </CrudLayout>
   );
 }
 
-export default AdminCrudModule;
+export default CrudModule;

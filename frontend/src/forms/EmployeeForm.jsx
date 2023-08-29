@@ -1,32 +1,17 @@
-import React from 'react';
-import { Form, Input, Select, Upload, message, Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { DatePicker } from '@/components/CustomAntd';
-import { API_BASE_URL } from '@/config/serverApiConfig';
-
-import errorHandler from '@/request/errorHandler';
-import successHandler from '@/request/successHandler';
-
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Select } from 'antd';
+import { DatePicker, UploadFile, RadioGroup } from '@/components/CustomAntd';
+import { useSelector } from 'react-redux';
+import { stateItems } from '@/redux/crud/selectors';
 
 export default function EmployeeForm({ selectedFile, setSelectedFile }) {
-  const props = {
-    name: 'photo',
-    action: `${API_BASE_URL}employee/photo`,
-    headers: {
-      authorization: localStorage.getItem('token')
-    },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        setSelectedFile(info.file?.response?.result?.photo?.filename);
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
+  const [state, setState] = useState([]);
+  const [cityList, setCityList] = useState([]);
+  const stateData = useSelector(stateItems);
+
+  useEffect(() => {
+    setCityList(stateData?.result?.[0]?.states.filter((k) => state === k.state_code)?.[0]?.cities)
+  }, [state, stateData])
 
 
   return (
@@ -143,6 +128,34 @@ export default function EmployeeForm({ selectedFile, setSelectedFile }) {
         <Input />
       </Form.Item>
       <Form.Item
+        name="state"
+        label="State"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+
+      >
+        <Select showSearch={true} onChange={(e) => setState(e)}>
+          {stateData?.result?.[0]?.states?.map((list) => <Select.Option value={list.state_code} key={list.id}>{list.name}</Select.Option>)}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="city"
+        label="City"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+
+      >
+        <Select showSearch={true}>
+          {cityList?.map((list) => <Select.Option value={list.name} key={list.id}>{list.name}</Select.Option>)}
+        </Select>
+      </Form.Item>
+      <Form.Item
         name="address"
         label="Address"
         rules={[
@@ -154,29 +167,21 @@ export default function EmployeeForm({ selectedFile, setSelectedFile }) {
         <Input />
       </Form.Item>
       <Form.Item
-        name="state"
-        label="State"
+        name="pincode"
+        label="Pincode"
         rules={[
           {
             required: true,
+            message: 'Please input your pincode!',
           },
         ]}
       >
         <Input />
       </Form.Item>
-      <Upload {...props}
-        beforeUpload={(file) => {
-          const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-          if (!isJPG) {
-            message.error('You can only upload JPG or PNG file!');
-            return false;
-          } else {
-            return true;
-          }
-        }}
-      >
-        <Button icon={<UploadOutlined />}>Upload profile pic</Button>
-      </Upload >
+      <RadioGroup />
+      <br />
+      <br />
+      <UploadFile path={`employee/photo`} setSelectedFile={setSelectedFile} />
       <br />
     </>
   );
