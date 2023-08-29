@@ -66,3 +66,25 @@ export const postOrder = async (data) => {
 
 
 }
+
+export const postChatGptResponse = async (data, setResponse) => {
+    try {
+        const response = await socketApi.post(`http://${API_SOCKET_BASE_URL}/orders/completions`, {
+            input: data
+        });
+        const responseData = response.data?.chatGpt;
+        setResponse(responseData)
+        successHandler(response, {
+            notifyOnSuccess: true,
+            notifyOnFailed: true,
+        });
+    } catch (error) {
+        return errorHandler(error);
+    }
+
+
+
+
+
+
+}

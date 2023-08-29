@@ -1,6 +1,9 @@
 import React from 'react';
 import { Divider, Row, Col } from 'antd';
-import { VideoPlayer } from '@/components/CustomAntd';
+import {
+  VideoPlayer,
+  // ChatGpt
+} from '@/components/CustomAntd';
 import { Statistic, Progress, Tag } from 'antd';
 import { API_BASE_URL } from '@/config/serverApiConfig';
 import { ArrowUpOutlined } from '@ant-design/icons';
@@ -334,6 +337,20 @@ export default function Dashboard() {
             <VideoPlayer url={`${API_BASE_URL}video/live`} />
           </div>
         </Col>
+        {/* <Col
+          className="gutter-row"
+          xs={{ span: 24 }}
+          sm={{ span: 24 }}
+          md={{ span: 12 }}
+          lg={{ span: 12 }}
+        >
+          <div className="whiteBox shadow mt-10">
+            <div className="pad20">
+              <h3 style={{ color: '#22075e', marginBottom: 5 }}>Chat Gpt</h3>
+            </div>
+            <ChatGpt />
+          </div>
+        </Col> */}
       </Row>
     </DashboardLayout>
   );

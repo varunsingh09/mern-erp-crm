@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const axios = require("axios");
 const Order = require('./../../models/erpModels/Order')
 
 /**
@@ -39,4 +40,32 @@ router.post('/', async (req, res) => {
     }
 })
 
+// router.post('/completions', async (req, res) => {
+//     try {
+//         // console.log('response', req.body)
+//         const { input } = req.body
+
+//         const response = await axios.post(
+//             "https://api.openai.com/v1/completions",
+//             {
+//                 prompt: `Complete this sentence: "${input}"`,
+//                 model: 'text-davinci-003',
+//                 max_tokens: 50,
+//                 n: 1,
+//                 stop: ".",
+//             },
+//             {
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     Authorization: `Bearer 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`,
+//                 },
+//             }
+//         );
+//         console.log('response from open ai', response)
+//         return response.data.choices[0].text;
+//     } catch (error) {
+//         console.log('error', error)
+//         res.send(error)
+//     }
+// })
 module.exports = router
